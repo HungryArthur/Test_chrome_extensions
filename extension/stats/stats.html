@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Статистика стресса</title>
+  <link rel="stylesheet" href="stats.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Статистика стресса</h1>
+  <div>
+    <label>Фильтр по теме:
+      <select id="topic-filter">
+        <option value="all">Все</option>
+        <option value="work">Работа</option>
+        <option value="health">Здоровье</option>
+        <option value="relationships">Отношения</option>
+      </select>
+    </label>
+    <button id="export-csv">Экспорт в CSV</button>
+  </div>
+  <canvas id="trend-chart" width="600" height="300"></canvas>
+  <div id="calendar"></div>
+  <script src="stats.js"></script>
+</body>
+</html>

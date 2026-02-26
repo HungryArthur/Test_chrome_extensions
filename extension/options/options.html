@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Настройки Stress Monitor</title>
+</head>
+<body>
+  <h1>Настройки</h1>
+  <form id="settings-form">
+    <label>
+      <input type="checkbox" id="notifications-enabled" checked> Включить подсказки
+    </label>
+    <br>
+    <label>
+      Тихие часы (начало):
+      <input type="time" id="quiet-start" value="22:00">
+    </label>
+    <br>
+    <label>
+      Тихие часы (конец):
+      <input type="time" id="quiet-end" value="08:00">
+    </label>
+    <br>
+    <button type="submit">Сохранить</button>
+    <button type="button" id="clear-data">Очистить все данные</button>
+  </form>
+  <script src="options.js"></script>
+</body>
+</html>     
