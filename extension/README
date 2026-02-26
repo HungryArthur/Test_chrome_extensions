@@ -1,0 +1,23 @@
+Структура расширения
+
+extension/
+├── manifest.json
+├── background.js
+├── popup/
+│   ├── popup.html
+│   ├── popup.js
+│   └── popup.css
+├── icons/
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+├── utils/
+│   ├── storage.js
+│   └── parsers.js
+├── options/
+│   ├── options.html
+│   └── options.js
+└── stats/
+    ├── stats.html
+    ├── stats.js
+    └── stats.css

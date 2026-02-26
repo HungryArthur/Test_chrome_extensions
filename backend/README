@@ -1,3 +1,16 @@
+структура backend
+backend/
+├── package.json
+├── server.js
+├── analyze.js
+├── dictionaries/
+│   ├── anxiety.json
+│   ├── fatigue.json
+│   └── topics.json
+└── .env
+
+
+
 запуск проекта
 
 cd backend
