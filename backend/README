@@ -1,0 +1,7 @@
+запуск проекта
+
+cd backend
+npm install
+npm run dev   # или npm start
+
+# ДОДЕЛАТЬ (НЕ РАБОТАЕТ)
