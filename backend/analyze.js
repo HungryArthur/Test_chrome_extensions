@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-// Загрузка словарей
+// Загрузка
 const anxietyWords = JSON.parse(fs.readFileSync(path.join(__dirname, 'dictionaries/anxiety.json'), 'utf8'));
 const fatigueWords = JSON.parse(fs.readFileSync(path.join(__dirname, 'dictionaries/fatigue.json'), 'utf8'));
 const topicsDict = JSON.parse(fs.readFileSync(path.join(__dirname, 'dictionaries/topics.json'), 'utf8'));
 
-// Функция для лемматизации/приведения к нижнему регистру (упрощённо)
+// Функция для приведения к нижнему регистру
 function normalize(text) {
   return text.toLowerCase().split(/\W+/);
 }
@@ -23,7 +23,7 @@ function analyze(query) {
   const anxietyCount = words.filter(w => anxietyWords.includes(w)).length;
   const fatigueCount = words.filter(w => fatigueWords.includes(w)).length;
   
-  // Простейшая формула: (кол-во негативных слов) / (общее кол-во слов) с ограничением
+  // формула: (кол-во негативных слов) / (общее кол-во слов) с ограничением
   if (words.length > 0) {
     stressScore = Math.min((anxietyCount + fatigueCount) / words.length, 1);
   }
@@ -43,7 +43,7 @@ function analyze(query) {
   // Если тематика не определена, добавить "other"
   if (topics.length === 0) topics.push('other');
   
-  // Нормализация (уже нормировали)
+  // Нормализация
   return {
     stress_score: stressScore,
     emotional_tags: emotionalTags,
