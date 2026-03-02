@@ -1,113 +1,65 @@
-// background.js
+// Ключевые слова для оценки стресса
+const STRESS_KEYWORDS = [
+  'срочно', 'дедлайн', 'проблема', 'кризис', 'авария', 'жопа', 'катастрофа',
+  'urgent', 'deadline', 'crash', 'error', 'fail', 'emergency', 'alert'
+];
 
-importScripts('utils/storage.js', 'utils/parsers.js'); // если используете модули, то потребуется сборка; для простоты можно всё в одном файле
-
-const SEARCH_ENGINES = {
-  'google.com': 'q',
-  'yandex.ru': 'text',
-  'duckduckgo.com': 'q'
-};
-
-// Извлечение поискового запроса из URL
-function extractQuery(url) {
-  try {
-    const urlObj = new URL(url);
-    const hostname = urlObj.hostname.replace('www.', '');
-    for (const [domain, param] of Object.entries(SEARCH_ENGINES)) {
-      if (hostname.includes(domain)) {
-        return urlObj.searchParams.get(param);
-      }
-    }
-  } catch (e) {
-    console.error('Error parsing URL', e);
-  }
-  return null;
-}
-
-// Отправка запроса на анализ
-async function analyzeQuery(query) {
-  const backendUrl = 'http://localhost:3000/api/analyze'; // позже заменить на продакшн
-
-  try {
-    const response = await fetch(backendUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query })
-    });
-    if (!response.ok) throw new Error('Backend error');
-    const result = await response.json();
-    await saveAnalysis(query, result);
-    await checkTriggers(); // проверяем условия для уведомлений после добавления новой записи
-  } catch (error) {
-    console.error('Failed to analyze:', error);
-  }
-}
-
-// Сохранение результата в chrome.storage.local
-async function saveAnalysis(query, result) {
-  const key = 'analyses';
-  const data = await chrome.storage.local.get(key);
-  const list = data[key] || [];
-  list.push({
-    query,
-    timestamp: Date.now(),
-    stress_score: result.stress_score,
-    emotional_tags: result.emotional_tags,
-    topics: result.topics
+function analyzeTabStress(tab) {
+  const text = (tab.title + ' ' + tab.url).toLowerCase();
+  let score = 0;
+  STRESS_KEYWORDS.forEach(word => {
+    if (text.includes(word)) score += 15;
   });
-  // Ограничим историю (например, последние 1000 записей)
-  if (list.length > 1000) list.shift();
-  await chrome.storage.local.set({ [key]: list });
+  score += Math.floor(Math.random() * 10);
+  return Math.min(score, 100);
 }
 
-// Проверка триггеров для уведомлений
-async function checkTriggers() {
-  const { analyses } = await chrome.storage.local.get('analyses');
-  if (!analyses || analyses.length === 0) return;
-
-  // Пример: высокий стресс 3 дня подряд
-  const now = Date.now();
-  const threeDaysAgo = now - 3 * 24 * 60 * 60 * 1000;
-  const lastThreeDays = analyses.filter(a => a.timestamp >= threeDaysAgo);
-  const highStressDays = new Set();
-  lastThreeDays.forEach(a => {
-    const day = new Date(a.timestamp).toDateString();
-    if (a.stress_score > 0.7) highStressDays.add(day);
+async function getCurrentStress() {
+  const tabs = await chrome.tabs.query({});
+  if (tabs.length === 0) return 0;
+  let total = 0;
+  tabs.forEach(tab => {
+    total += analyzeTabStress(tab);
   });
-  if (highStressDays.size >= 3) {
-    showNotification(
-      'Напряжённые дни',
-      'Последние дни были напряжёнными. Хотите упражнение на расслабление?'
-    );
+  return Math.round(total / tabs.length);
+}
+
+function generateStressDataForPeriod(period) {
+  let points;
+  switch (period) {
+    case 'today': points = 1; break;
+    case '3days': points = 3; break;
+    case 'week': points = 7; break;
+    case 'month': points = 30; break;
+    case 'halfyear': points = 180; break;
+    default: points = 7;
   }
 
-  // Дополнительные триггеры можно добавить здесь
+  const data = [];
+  for (let i = 0; i < points; i++) {
+    let base = 50 + Math.sin(i / 7) * 10 + (i / points) * 5 + Math.random() * 15;
+    data.push(Math.min(100, Math.max(0, Math.round(base))));
+  }
+
+  const avg = Math.round(data.reduce((a, b) => a + b, 0) / data.length);
+  const peak = Math.max(...data);
+  const highRiskTabs = Math.floor(Math.random() * 5) + 1;
+
+  return { data, avg, peak, highRiskTabs };
 }
 
-function showNotification(title, message) {
-  chrome.notifications.create({
-    type: 'basic',
-    iconUrl: 'icons/icon48.png',
-    title,
-    message,
-    priority: 2
-  });
-}
-
-// Слушаем обновления вкладок
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete' && tab.url && tab.active) {
-    const query = extractQuery(tab.url);
-    if (query) {
-      analyzeQuery(query);
-    }
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'getCurrentStress') {
+    getCurrentStress().then(level => sendResponse({ level }));
+    return true;
+  } else if (request.action === 'getStressData') {
+    const result = generateStressDataForPeriod(request.period || 'week');
+    sendResponse(result);
+    return true;
   }
 });
 
-// Также можно использовать alarms для периодической проверки (например, раз в день)
-chrome.alarms.create('dailyCheck', { periodInMinutes: 1440 });
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'dailyCheck') {
-    checkTriggers(); // или другие действия
-  }
+// Открываем боковую панель при клике на иконку
+chrome.action.onClicked.addListener((tab) => {
+  chrome.sidePanel.open({ tabId: tab.id });
 });

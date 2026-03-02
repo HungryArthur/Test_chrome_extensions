@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sider – антистресс</title>
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="sidepanel.css" />
+    <!-- Локальный Chart.js (скачайте файл и положите рядом) -->
+    <script src="chart.umd.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="css-testt ant-app">
+        <div class="sider-sidepanel">
+          <div dir="ltr" class="chat-gpt-quick-query-container">
+            <div class="chat-gpt-query-model-wrapper" tabindex="1">
+              <div class="chat-gpt-query-model">
+                <div class="flip-y">
+                  <div class="flex size-full">
+                    <div class="query-inner-container">
+                      <div class="alert-container"></div>
+
+                      <!-- Вкладки -->
+                      <div class="tabs-container">
+                        <button class="tab-button active" data-tab="stress">Текущий стресс</button>
+                        <button class="tab-button" data-tab="graphs">Графики стресса</button>
+                      </div>
+
+                      <!-- Содержимое вкладки Текущий стресс -->
+                      <div class="tab-content active" id="tab-stress">
+                        <div class="stress-current-panel">
+                          <div class="stress-current-container">
+                            <div class="stress-current-label">Текущий уровень стресса</div>
+                            <div class="stress-current-value" id="currentStressValue">--%</div>
+                            <div class="stress-current-recommendation" id="currentStressRecommendation"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Содержимое вкладки Графики стресса -->
+                      <div class="tab-content" id="tab-graphs">
+                        <div class="graphs-panel">
+                          <div class="period-selector">
+                            <button class="period-btn active" data-period="today">Сегодня</button>
+                            <button class="period-btn" data-period="3days">3 дня</button>
+                            <button class="period-btn" data-period="week">Неделя</button>
+                            <button class="period-btn" data-period="month">Месяц</button>
+                            <button class="period-btn" data-period="halfyear">Полгода</button>
+                          </div>
+                          <canvas id="stressChart" width="300" height="150"></canvas>
+                          <div class="stats-grid">
+                            <div class="stat-card">
+                              <span class="stat-label">Средний</span>
+                              <span class="stat-value" id="avgStress">--</span>
+                            </div>
+                            <div class="stat-card">
+                              <span class="stat-label">Пиковый</span>
+                              <span class="stat-value" id="peakStress">--</span>
+                            </div>
+                            <div class="stat-card">
+                              <span class="stat-label">Вкладок с высоким риском</span>
+                              <span class="stat-value" id="highRiskTabs">--</span>
+                            </div>
+                          </div>
+                          <div class="recommendation-box">
+                            <p id="stressRecommendation">Анализируем ваш стресс...</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Нижняя панель -->
+                      <div class="switch-bar" style="box-shadow: none">
+                        <div class="switchbar-action">
+                          <span><div class="size-[14px]">☰</div></span>
+                          <span><div class="size-[14px]">⋯</div></span>
+                        </div>
+                        <div class="flex bottom-icons">
+                          <span>🏠</span>
+                          <span>📊</span>
+                          <span>⚙️</span>
+                          <span>👤</span>
+                          <div class="bottom-area">
+                            <div class="relative"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="sidepanel.js"></script>
+  </body>
+</html>

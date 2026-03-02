@@ -1,0 +1,336 @@
+/* Базовые сбросы и переменные */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	--bg-primary: #1e1e2f;
+	--bg-secondary: #2a2a3a;
+	--text-primary: #ffffff;
+	--text-secondary: #a0a0b0;
+	--accent: #6c5ce7;
+	--accent-hover: #8170f0;
+	--border-color: #3a3a4a;
+	--card-bg: #2f2f41;
+	--success: #00b894;
+	--warning: #fdcb6e;
+	--danger: #d63031;
+	--font-sans:
+		'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+	font-family: var(--font-sans);
+	background: var(--bg-primary);
+	color: var(--text-primary);
+	height: 100vh;
+	overflow: hidden;
+}
+
+#app {
+	height: 100%;
+}
+
+/* Утилиты */
+.flex {
+	display: flex;
+}
+.size-full {
+	width: 100%;
+	height: 100%;
+}
+.absolute {
+	position: absolute;
+}
+.relative {
+	position: relative;
+}
+.w-full {
+	width: 100%;
+}
+.h-full {
+	height: 100%;
+}
+.mb-2\.5 {
+	margin-bottom: 0.625rem;
+}
+.mt-4 {
+	margin-top: 1rem;
+}
+.mt-\[8px\] {
+	margin-top: 8px;
+}
+.text-\[36px\] {
+	font-size: 36px;
+}
+.text-xs {
+	font-size: 0.75rem;
+}
+.text-center {
+	text-align: center;
+}
+.transition-opacity {
+	transition: opacity 0.2s;
+}
+
+/* Основные контейнеры */
+.sider-sidepanel {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background: var(--bg-primary);
+}
+
+.chat-gpt-quick-query-container {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.chat-gpt-query-model-wrapper {
+	flex: 1;
+	display: flex;
+	overflow: hidden;
+}
+
+.chat-gpt-query-model {
+	flex: 1;
+	display: flex;
+	overflow: hidden;
+}
+
+.flip-y {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.query-inner-container {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	padding: 16px;
+	gap: 12px;
+}
+
+/* Вкладки */
+.tabs-container {
+	display: flex;
+	gap: 8px;
+	border-bottom: 1px solid var(--border-color);
+	padding-bottom: 8px;
+}
+
+.tab-button {
+	background: transparent;
+	border: none;
+	color: var(--text-secondary);
+	padding: 6px 12px;
+	border-radius: 20px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.2s;
+}
+
+.tab-button:hover {
+	background: var(--bg-secondary);
+	color: var(--text-primary);
+}
+
+.tab-button.active {
+	background: var(--accent);
+	color: white;
+}
+
+.tab-content {
+	display: none;
+	flex: 1 1 auto;
+	overflow-y: auto;
+	margin-top: 12px;
+	min-height: 0; /* критично для flex-контейнеров */
+}
+
+.tab-content.active {
+	display: block;
+}
+
+/* Текущий стресс */
+.stress-current-panel {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	min-height: 300px;
+}
+
+.stress-current-container {
+	text-align: center;
+	padding: 20px;
+}
+
+.stress-current-label {
+	font-size: 18px;
+	color: var(--text-secondary);
+	margin-bottom: 16px;
+}
+
+.stress-current-value {
+	font-size: 72px;
+	font-weight: 700;
+	color: var(--accent);
+	line-height: 1.2;
+	margin-bottom: 16px;
+}
+
+.stress-current-recommendation {
+	font-size: 14px;
+	color: var(--text-primary);
+	background: var(--bg-secondary);
+	padding: 12px;
+	border-radius: 12px;
+	border-left: 4px solid var(--accent);
+}
+
+/* Панель графиков */
+.graphs-panel {
+	padding: 8px 4px;
+	height: 100%; /* растянуться на всю высоту родителя */
+	overflow-y: auto; /* внутренний скролл, если контент не помещается */
+}
+
+.graphs-panel h3 {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 16px;
+	color: var(--text-primary);
+}
+
+/* Периоды */
+.period-selector {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 16px;
+	justify-content: center;
+}
+
+.period-btn {
+	background: var(--bg-secondary);
+	border: 1px solid var(--border-color);
+	color: var(--text-secondary);
+	padding: 4px 10px;
+	border-radius: 16px;
+	font-size: 11px;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.period-btn:hover {
+	background: var(--accent);
+	color: white;
+	border-color: var(--accent);
+}
+
+.period-btn.active {
+	background: var(--accent);
+	color: white;
+	border-color: var(--accent);
+}
+
+#stressChart {
+	width: 100%;
+	height: 150px; /* соответствует атрибуту canvas */
+	background: var(--card-bg);
+	border-radius: 12px;
+	padding: 8px;
+	margin-bottom: 20px;
+	box-sizing: border-box;
+}
+
+.stats-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+.stat-card {
+	background: var(--card-bg);
+	border-radius: 10px;
+	padding: 12px 6px;
+	text-align: center;
+	border: 1px solid var(--border-color);
+}
+
+.stat-label {
+	display: block;
+	font-size: 11px;
+	color: var(--text-secondary);
+	margin-bottom: 4px;
+}
+
+.stat-value {
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--accent);
+}
+
+.recommendation-box {
+	background: var(--bg-secondary);
+	border-left: 4px solid var(--accent);
+	padding: 12px;
+	border-radius: 8px;
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--text-primary);
+}
+
+/* Switch bar */
+.switch-bar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 0;
+	border-top: 1px solid var(--border-color);
+	margin-top: 8px;
+}
+
+.switchbar-action {
+	display: flex;
+	gap: 16px;
+	color: var(--text-secondary);
+}
+
+.bottom-icons {
+	gap: 16px;
+	color: var(--text-secondary);
+	cursor: pointer;
+}
+
+.bottom-icons span:hover {
+	color: var(--accent);
+}
+
+/* Скролл */
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--border-color);
+	border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--accent);
+}
