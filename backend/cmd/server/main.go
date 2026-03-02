@@ -14,24 +14,25 @@ func main() {
     
     r := chi.NewRouter()
     
-    // CORS middleware на самом верху!
+    // CORS для вашего расширения
     r.Use(rest.NewCORSMiddleware(cfg))
     
     // Базовые роуты
     r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("Extension Backend API"))
+        w.Write([]byte("Extension Backend API v1"))
     })
     
-    // API v1 - используем r.Group вместо api.Group
-    api := r.Group("/api/v1")
-    api.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+    // API роуты
+    r.Get("/api/v1/ping", func(w http.ResponseWriter, r *http.Request) {
         w.Write([]byte("pong"))
     })
     
-    // Extension роуты - передаем chi.Mux
-    extensionRouter := api.Group("/extension")
-    rest.RegisterHandlers(extensionRouter)
+    // ✅ Extension API - монтируем handlers
+    apiRouter := chi.NewRouter()
+    rest.RegisterHandlers(apiRouter)
+    r.Mount("/api/v1/extension", apiRouter)
     
-    log.Printf("🚀 Server starting on http://localhost:%s", cfg.Port)
+    log.Printf("🚀 Backend ready: http://localhost:%s", cfg.Port)
+    log.Println("📱 Test: curl http://localhost:8080/api/v1/extension/data")
     log.Fatal(http.ListenAndServe(":"+cfg.Port, r))
 }
