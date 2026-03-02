@@ -11,6 +11,12 @@ type MemoryStore struct {
 	users map[string]UserState
 }
 
+var globalStore = NewMemoryStore()
+
+func GetStore() *MemoryStore {
+    return globalStore
+}
+
 func NewMemoryStore() *MemoryStore {
 	return &MemoryStore{
 		items: make(map[string]DataItem),

@@ -13,5 +13,5 @@ func GetData() []storage.DataItem {
 }
 
 func SyncData(req storage.SyncRequest) {
-	store.SyncData(req)
+	storage.GetStore().SyncData(req) // Ссылка на глобальный store
 }

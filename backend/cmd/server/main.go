@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/hungryarthur/Test_chrome_extensions/backend/internal/config"
-	"github.com/hungryarthur/Test_chrome_extensions/backend/internal/extension/transport/rest"
+	"backend/internal/config"
+	"backend/internal/extension/transport/rest"
 )
 
 func main() {
