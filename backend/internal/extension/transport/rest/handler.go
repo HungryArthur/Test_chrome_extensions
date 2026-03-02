@@ -3,6 +3,7 @@ package rest
 import (
 	"backend/internal/extension/service"
 	"backend/internal/extension/storage"
+	"backend/internal/logger"
 	"encoding/json"
 	"net/http"
 
@@ -15,24 +16,30 @@ func init() {
 	store.InitTestData()
 }
 
-
 func RegisterHandlers(r chi.Router) {
 	r.Get("/data", getData)
 	r.Post("/sync", syncData)
 }
 
 func getData(w http.ResponseWriter, r *http.Request) {
-	data := store.GetData() // Используем глобальный store
+	logger.Info.Printf("📥 GET data: %s", r.RemoteAddr)
+	data := store.GetData()
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(data)
+	logger.Info.Println("📤 Data sent successfully")
 }
 
 func syncData(w http.ResponseWriter, r *http.Request) {
-	var req storage.SyncRequest // Из storage, не service
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	service.SyncData(req) // Через service слой
-	w.WriteHeader(http.StatusOK)
+    logger.Info.Printf("📥 SYNC data from: %s", r.RemoteAddr)
+    
+    var req storage.SyncRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        logger.Error.Printf("❌ Decode error: %v", err)
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+    
+    service.SyncData(req)
+    logger.Info.Printf("✅ Synced %d items", len(req.Items))
+    w.WriteHeader(http.StatusOK)
 }
