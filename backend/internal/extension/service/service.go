@@ -1,34 +1,17 @@
 package service
 
-import (
-    "time"
-)
+import "backend/internal/extension/storage"
 
-type DataItem struct {
-    ID      string    `json:"id"`
-    Value   string    `json:"value"`
-    Updated time.Time `json:"updated"`
-}
+var store = storage.NewMemoryStore()
 
-type SyncRequest struct {
-    Items []DataItem `json:"items"`
-}
-
-var dataStore []DataItem  // В памяти для простоты
-
-// Инициализация данных
 func init() {
-    dataStore = []DataItem{
-        {ID: "1", Value: "Hello from Go!", Updated: time.Now()},
-    }
+	store.InitTestData()
 }
 
-// GetData возвращает все данные расширения
-func GetData() []DataItem {
-    return dataStore
+func GetData() []storage.DataItem {
+	return store.GetData()
 }
 
-// SyncData синхронизирует данные от расширения
-func SyncData(req SyncRequest) {
-    dataStore = req.Items
+func SyncData(req storage.SyncRequest) {
+	store.SyncData(req)
 }
